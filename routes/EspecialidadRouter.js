@@ -2,6 +2,8 @@ import { Router } from 'express';
 import { body, param, query } from 'express-validator';
 import auth from '../middlewares/auth.js';
 import validate from '../middlewares/validate.js';
+
+
 import { list, getById, create, update, remove } from '../controllers/EspecialidadController.js';
 
 const router = Router();

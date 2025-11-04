@@ -1,69 +1,51 @@
 import { Router } from 'express';
-import { body, param, query } from 'express-validator';
-import auth from '../middlewares/auth.js';
+import { body } from 'express-validator';
 import validate from '../middlewares/validate.js';
-import { list, getById, create, update, remove } from '../controllers/EspecialistaController.js';
+import {
+  getEspecialistas,
+  getById,
+  create as createEspecialista,
+  update as updateEspecialista,
+  remove as deleteEspecialista,
+} from '../controllers/EspecialistaController.js';
 
 const router = Router();
 
-// Lista + filtros + búsqueda
-router.get(
-  '/',
-  [
-    query('modality').optional().isIn(['presencial', 'virtual', 'mixta']),
-    query('insurance').optional().isIn(['prepaga', 'particular', 'ambas']),
-    query('specialty').optional().isString(),
-    query('city').optional().isString(),
-    query('province').optional().isString(),
-    query('q').optional().isString()
-  ],
-  validate,
-  list
-);
+router.get('/', getEspecialistas);
+router.get('/:id', getById);
 
-// Obtener por id
-router.get(
-  '/:id',
-  [param('id').isMongoId().withMessage('id inválido')],
-  validate,
-  getById
-);
-
-// Crear (protegido)
 router.post(
   '/',
-  auth,
   [
-    body('nombre').notEmpty(),
-    body('profesion').isIn(['psicologa', 'nutricionista', 'psiquiatra', 'ginecologa', 'medico_clinico', 'otro']),
-    body('modality').isIn(['presencial', 'virtual', 'mixta']),
-    body('insurance').isIn(['prepaga', 'particular', 'ambas']),
-    body('specialties').isArray().withMessage('specialties debe ser array'),
-    body('city').notEmpty(),
-    body('province').notEmpty(),
-    body('email').optional().isEmail().withMessage('email inválido')
+    body('nombre').notEmpty().withMessage('nombre requerido'),
+    body('profesion').notEmpty().withMessage('profesión requerida'),
+    body('modality').isIn(['presencial','virtual','mixta']).withMessage('modality inválida'),
+    body('insurance').isIn(['prepaga','particular','ambas']).withMessage('insurance inválida'),
+    body('email').optional().isEmail().withMessage('email inválido'),
+    body('specialties').optional().isArray().withMessage('specialties debe ser array'),
+    body('city').optional().isString(),
+    body('province').optional().isString(),
   ],
   validate,
-  create
+  createEspecialista
 );
 
-// Actualizar (protegido)
 router.put(
   '/:id',
-  auth,
-  [param('id').isMongoId().withMessage('id inválido')],
+  [
+    body('nombre').optional().notEmpty(),
+    body('profesion').optional().notEmpty(),
+    body('modality').optional().isIn(['presencial','virtual','mixta']),
+    body('insurance').optional().isIn(['prepaga','particular','ambas']),
+    body('email').optional().isEmail(),
+    body('specialties').optional().isArray(),
+    body('city').optional().isString(),
+    body('province').optional().isString(),
+  ],
   validate,
-  update
+  updateEspecialista
 );
 
-// Eliminar (protegido)
-router.delete(
-  '/:id',
-  auth,
-  [param('id').isMongoId().withMessage('id inválido')],
-  validate,
-  remove
-);
+router.delete('/:id', deleteEspecialista);
 
 export default router;
-

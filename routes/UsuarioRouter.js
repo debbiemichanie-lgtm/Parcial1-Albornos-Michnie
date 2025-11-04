@@ -1,11 +1,15 @@
 import { Router } from 'express';
 import { body } from 'express-validator';
-import validate from '../middlewares/validate.js';
+import { requireAuth as auth } from '../middlewares/auth.js';
 import { register, login, me } from '../controllers/UsuarioController.js';
-import auth from '../middlewares/auth.js';
+import validate from '../middlewares/validate.js';
+
 
 const router = Router();
 
+// === Rutas ===
+
+// Registro
 router.post(
   '/register',
   [
@@ -17,6 +21,7 @@ router.post(
   register
 );
 
+// Login
 router.post(
   '/login',
   [
@@ -27,6 +32,7 @@ router.post(
   login
 );
 
+// Perfil actual (requiere token)
 router.get('/me', auth, me);
 
 export default router;

@@ -1,48 +1,91 @@
 <!doctype html>
 <html lang="es">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>API Especialistas en TCA</title>
-  <link rel="stylesheet" href="./style.css"/>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Directorio de especialistas</title>
+  <link rel="stylesheet" href="./style.css" />
 </head>
 <body>
-<main>
-  <h1>API – Especialistas en Trastornos de la Conducta Alimentaria (TCA)</h1>
-  <p class="small">Esta API permite gestionar especialistas (psicólogas, nutricionistas, psiquiatras, etc.) de Argentina.</p>
+  <header class="container">
+    <div class="filters">
+      <input id="q" type="text" placeholder="Buscar por nombre o profe" />
+      <select id="modality">
+        <option value="">Modalidad (todas)</option>
+        <option value="presencial">Presencial</option>
+        <option value="virtual">Virtual</option>
+        <option value="mixta">Mixta</option>
+      </select>
+      <select id="insurance">
+        <option value="">Cobertura (todas)</option>
+        <option value="prepaga">Prepaga</option>
+        <option value="particular">Particular</option>
+        <option value="ambas">Ambas</option>
+      </select>
+      <input id="city" type="text" placeholder="Ciudad (ej: CABA)" />
+      <button id="btnSearch" class="btn">Buscar</button>
+      <button id="btnClear" class="btn outline">Limpiar</button>
 
-  <section>
-    <h2>Especialistas</h2>
-    <ul>
-  <li><a href="/api/especialistas">GET /api/especialistas</a> <span class="hint">lista</span></li>
-  <li><a href="/api/especialistas?q=ana">GET /api/especialistas?q=ana</a> <span class="hint">búsqueda por nombre</span></li>
-  <li><a href="/api/especialistas?modality=virtual&insurance=prepaga">GET /api/especialistas?modality=virtual&insurance=prepaga</a> <span class="hint">filtros</span></li>
-</ul>
-  </section>
+      <button id="btnOpenLogin" class="btn small">Login</button>
+      <button id="btnLogout" class="btn small outline hidden">Logout</button>
+    </div>
+  </header>
 
-  <section>
-    <h2>Especialidades</h2>
-   <ul>
-  <li><a href="/api/especialidades">GET /api/especialidades</a> <span class="hint">lista</span></li>
-  <li>GET /api/especialidades/:id</li>
-  <li>POST /api/especialidades <span class="hint">protegido</span></li>
-  <li>PUT /api/especialidades/:id <span class="hint">protegido</span></li>
-  <li>DELETE /api/especialidades/:id <span class="hint">protegido</span></li>
-</ul>
+  <main class="container grid">
+    <section class="col">
+      <h2>Listado</h2>
+      <p id="resultInfo" class="muted">Resultados: 0</p>
+      <div id="cards" class="cards"></div>
+    </section>
 
-  </section>
+    <section class="col">
+      <h2>Nuevo especialista</h2>
 
-  <section>
-    <h2>Autenticación</h2>
-    <pre>POST /api/auth/register
-POST /api/auth/login  → devuelve JWT
-GET  /api/auth/me     (Bearer &lt;token&gt;)</pre>
-  </section>
-</main>
+      <div id="adminBox" class="hidden">
+        <form id="formCreate" class="form">
+          <input id="f_nombre" type="text" placeholder="Nombre y apellido" required />
+          <input id="f_profesion" type="text" placeholder="Profesión (ej: Psicóloga)" required />
 
-<footer>
-    Debbie Michanie • Tiara Albornos • Aplicaciones Híbridas • Docente: Jonathan Cruz • Comisión: DWM4AP-0225
-</footer>
+          <select id="f_modality" required>
+            <option value="">Modalidad</option>
+            <option value="presencial">Presencial</option>
+            <option value="virtual">Virtual</option>
+            <option value="mixta">Mixta</option>
+          </select>
+
+          <select id="f_insurance" required>
+            <option value="">Cobertura</option>
+            <option value="prepaga">Prepaga</option>
+            <option value="particular">Particular</option>
+            <option value="ambas">Ambas</option>
+          </select>
+
+          <input id="f_specialties" type="text" placeholder="Especialidades (coma separadas)" />
+          <input id="f_city" type="text" placeholder="Ciudad" />
+          <input id="f_province" type="text" placeholder="Provincia" />
+          <input id="f_email" type="email" placeholder="Email" />
+
+          <button class="btn" type="submit">Crear</button>
+          <span id="createMsg" class="muted"></span>
+        </form>
+      </div>
+
+      <p class="muted" id="adminHint">Iniciá sesión para habilitar el ABM.</p>
+    </section>
+  </main>
+
+  <!-- Diálogo de login -->
+  <dialog id="dlgLogin" class="dialog">
+    <h3>Login admin</h3>
+    <input id="loginEmail" type="email" placeholder="Email" />
+    <input id="loginPass" type="password" placeholder="Password" />
+    <div class="row">
+      <button id="btnDoLogin" class="btn">Ingresar</button>
+      <button onclick="document.querySelector('#dlgLogin').close()" class="btn outline">Cancelar</button>
+    </div>
+    <p id="loginMsg" class="muted"></p>
+  </dialog>
+
+  <script src="./app.js" type="module"></script>
 </body>
 </html>
-
